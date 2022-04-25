@@ -1,12 +1,20 @@
+using Infrastructure.Persistence.Context;
+using Infrastructure.Persistence.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using WebAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 
-// Add services to the container.
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection"),
+        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+});
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-builder.Services.AddControllers()
-                .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -18,8 +26,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwagger();
-
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web v1"));
 }
 // global error handler
