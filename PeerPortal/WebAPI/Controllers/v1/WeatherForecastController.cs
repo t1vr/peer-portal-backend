@@ -22,6 +22,8 @@ namespace WebAPI.Controllers.v1
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            int x = 0;
+            int y= 4 / x;
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
