@@ -11,10 +11,12 @@ namespace Infrastructure.Persistence.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+        public IUserRepository Users { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context,IUserRepository userRepository)
         {
             _context = context;
+            Users = userRepository;
         }
 
         public async Task<int> SaveChangeAsync()

@@ -1,6 +1,10 @@
+using Application.IRepositories;
+using Application.IServices;
+using Application.Services;
+using Domain.Entities;
 using Infrastructure.Persistence.Context;
 using Infrastructure.Persistence.Extensions;
-using Infrastructure.Persistence.Models;
+using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -28,6 +32,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 });
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -35,6 +45,13 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 builder.Services.SeedData(app);
+
+
+
+
+
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
