@@ -1,4 +1,5 @@
 ﻿using Application.IServices;
+using Application.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,10 @@ namespace WebAPI.Controllers.v1
         {
             _userService = userService;
         }
-        public Task<IActionResult> Register()
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
-            return _userService.RegisterUserAsync();
+            return await _userService.RegisterUserAsync(registerRequest);
         }
     }
 }

@@ -2,6 +2,7 @@ using Application.IRepositories;
 using Application.IServices;
 using Application.Services;
 using Domain.Entities;
+using FluentValidation.AspNetCore;
 using Infrastructure.Persistence.Context;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 using WebAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +26,10 @@ builder.Logging.AddSerilog();
 #endregion
 Log.Information("Application Starting");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation(s =>
+{
+    s.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

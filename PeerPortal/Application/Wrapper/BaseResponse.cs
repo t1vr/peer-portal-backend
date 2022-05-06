@@ -13,14 +13,14 @@ namespace Application.Wrapper
         public List<string>? Errors { get; set; }
         public T? Data { get; set; }
 
-        BaseResponse() { }
-        BaseResponse(T data,string message=null) 
+        public BaseResponse() { }
+        public BaseResponse(T data,string message=null) 
         { 
             Succeeded = true;
             Message = message;
             Data = data;
         }
-        BaseResponse(string message)
+        public BaseResponse(string message)
         {
             Succeeded = false;
             Message = message;
