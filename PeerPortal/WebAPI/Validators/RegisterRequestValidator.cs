@@ -1,4 +1,4 @@
-﻿using Application.Request;
+﻿using Application.Request_Model;
 using FluentValidation;
 
 namespace WebAPI.Validators

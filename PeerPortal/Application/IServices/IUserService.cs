@@ -1,4 +1,6 @@
-﻿using Application.Request;
+﻿using Application.Request_Model;
+using Application.ResponseModel;
+using Application.Wrapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,6 @@ namespace Application.IServices
 {
     public interface IUserService
     {
-        public Task<IActionResult> RegisterUserAsync(RegisterRequest registerRequest);
+        public Task<BaseResponse<UserRegistrationResponseModel>> RegisterUserAsync(RegisterRequest registerRequest);
     }
 }

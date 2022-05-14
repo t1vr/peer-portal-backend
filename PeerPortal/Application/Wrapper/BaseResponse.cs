@@ -14,17 +14,19 @@ namespace Application.Wrapper
         public T? Data { get; set; }
 
         public BaseResponse() { }
-        public BaseResponse(T data,string message=null) 
-        { 
-            Succeeded = true;
-            Message = message;
-            Data = data;
-        }
+
         public BaseResponse(string message)
         {
             Succeeded = false;
             Message = message;
         }
+        public BaseResponse(bool succeded,T data,string message=null) 
+        { 
+            Succeeded = succeded;
+            Message = message;
+            Data = data;
+        }
+        
 
     }
 }
