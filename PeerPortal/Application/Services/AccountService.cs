@@ -1,14 +1,11 @@
-﻿using Application.IRepositories;
-using Application.IServices;
+﻿using Application.IServices;
 using Application.Request_Model;
 using Application.ResponseModel;
 using Application.Wrapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -18,29 +15,28 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class UserService:IUserService
+    public class AccountService : IAccountService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-
-        public UserService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,IConfiguration configuration,IEmailService emailService)
+        private readonly IConfiguration _configuration;
+        public AccountService(UserManager<ApplicationUser> userManager,
+            IEmailService emailService,
+            IConfiguration configuration)
         {
-            _unitOfWork = unitOfWork;
             _userManager = userManager;
-            _emailService = emailService;
+            this._emailService = emailService;
             _configuration = configuration;
         }
+
 
 
         public async Task<BaseResponse<UserRegistrationResponseModel>> RegisterUserAsync(RegisterRequest request)
         {
             var userResponse = new UserRegistrationResponseModel(request.FirstName, request.LastName, request.UserName, request.Email);
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
-            if(userWithSameUserName is not null)
+            if (userWithSameUserName is not null)
             {
-                Log.Information($"Username {request.UserName} is already taken.");
                 return new BaseResponse<UserRegistrationResponseModel>(false, userResponse, $"Username {request.UserName} is already taken.");
             }
             var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
@@ -59,7 +55,7 @@ namespace Application.Services
                 if (result.Succeeded)
                 {
                     var verificationUri = await SendVerificationEmail(user);
-                    return new BaseResponse<UserRegistrationResponseModel>(true, userResponse, $"Successfully created user.");
+                    return new BaseResponse<UserRegistrationResponseModel>(true, userResponse, $"Successfully created user.{verificationUri}");
                 }
 
             }
@@ -70,16 +66,41 @@ namespace Application.Services
         private async Task<string> SendVerificationEmail(ApplicationUser user)
         {
             string origin = _configuration.GetSection("AppUrl").Get<string>();
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "api/account/confirm-email/";
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var route = "api/account/verify-email/";
             var _enpointUri = new Uri(string.Concat($"{origin}/", route));
             var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", token);
             //Email Service Call Here
-            await  _emailService.SendAsync("clair.dietrich93@ethereal.email", user.Email, "Verify email", $"<p>Please confirm your email by clicking here!</p>");
+            await _emailService.SendAsync("clair.dietrich93@ethereal.email", user.Email, "Verify email", $"<p>Please confirm your email by clicking here!</p></br>{verificationUri}");
             return verificationUri;
 
         }
+
+
+        public async Task<BaseResponse<string>> ConfirmEmailAsync(string userId, string token)
+        {
+            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    return new BaseResponse<string>(true, null, $"Account Confirmed for {user.Email}");
+                }
+                else
+                {
+                    return new BaseResponse<string>($"An error occured while confirming {user.Email}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return new BaseResponse<string>($"An error occured while confirming user email.");
+            }
+        }
+
     }
 }

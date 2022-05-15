@@ -1,10 +1,12 @@
 ﻿using Application.IServices;
+using Application.Wrapper;
 using Domain.Settings;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +44,7 @@ namespace Infrastructure.Persistence.Services
             }
             catch (System.Exception ex)
             {
-                throw new Exception();
+                Log.Information(ex.Message);
             }
         }
     }

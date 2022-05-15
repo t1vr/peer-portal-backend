@@ -1,5 +1,7 @@
 ﻿using Application.IServices;
-using Application.Request;
+using Application.Request_Model;
+using Application.ResponseModel;
+using Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +17,7 @@ namespace WebAPI.Controllers.v1
             _userService = userService;
         }
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
+        public async Task<BaseResponse<UserRegistrationResponseModel>> Register([FromBody] RegisterRequest registerRequest)
         {
             return await _userService.RegisterUserAsync(registerRequest);
         }
