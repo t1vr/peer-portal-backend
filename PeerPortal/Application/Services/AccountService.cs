@@ -102,5 +102,9 @@ namespace Application.Services
             }
         }
 
+        public Task<BaseResponse<UserResponseModel>> AuthenticateAsync(AuthenticationRequest request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

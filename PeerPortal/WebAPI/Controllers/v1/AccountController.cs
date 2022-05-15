@@ -34,5 +34,12 @@ namespace WebAPI.Controllers.v1
             Log.Information($"userId={userId} token={token} requested to verify Email");
             return await _accountService.ConfirmEmailAsync(userId, token);
         }
+
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<BaseResponse<UserResponseModel>> AuthenticateAsync(AuthenticationRequest request)
+        {
+            return Ok(await _accountService.AuthenticateAsync(request);
+        }
     }
 }

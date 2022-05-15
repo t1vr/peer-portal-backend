@@ -13,6 +13,6 @@ namespace Application.IServices
     {
         Task<BaseResponse<UserRegistrationResponseModel>> RegisterUserAsync(RegisterRequest registerRequest);
         Task<BaseResponse<string>> ConfirmEmailAsync(string userId, string token);
-
+        Task<BaseResponse<UserResponseModel>> AuthenticateAsync(AuthenticationRequest authenticationRequest);
     }
 }
