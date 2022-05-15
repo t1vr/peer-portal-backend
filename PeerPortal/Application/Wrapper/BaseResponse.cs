@@ -12,12 +12,18 @@ namespace Application.Wrapper
         public string? Message { get; set; }
         public List<string>? Errors { get; set; }
         public T? Data { get; set; }
-
+        public int StatusCode { get; set; }
         public BaseResponse() { }
 
         public BaseResponse(string message)
         {
             Succeeded = false;
+            Message = message;
+        }
+        public BaseResponse(int statusCode, string message)
+        {
+            Succeeded = false;
+            StatusCode = statusCode;
             Message = message;
         }
         public BaseResponse(bool succeded,T data,string message=null) 

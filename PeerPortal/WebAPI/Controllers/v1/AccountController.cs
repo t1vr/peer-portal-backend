@@ -36,7 +36,7 @@ namespace WebAPI.Controllers.v1
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("sign-in")]
         public async Task<BaseResponse<UserResponseModel>> AuthenticateAsync(AuthenticationRequest request)
         {
             return await _accountService.AuthenticateAsync(request);
