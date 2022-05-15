@@ -1,6 +1,7 @@
 using Application.IRepositories;
 using Application.IServices;
 using Application.Services;
+using Application.Wrapper;
 using Domain.Entities;
 using Domain.Settings;
 using FluentValidation.AspNetCore;
@@ -8,11 +9,15 @@ using Infrastructure.Persistence.Context;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Serilog;
 using System.Reflection;
+using System.Text;
 using WebAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,10 +70,57 @@ builder.Services.Configure<IdentityOptions>(options =>
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = false;
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web", Version = "v1" }));
 
+
+builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidIssuer = builder.Configuration["JWTSettings:Issuer"],
+        ValidAudience = builder.Configuration["JWTSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:Key"]))
+    };
+    options.Events = new JwtBearerEvents()
+    {
+        OnAuthenticationFailed = context =>
+        {
+            context.NoResult();
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "text/plain";
+            var result = JsonConvert.SerializeObject(new BaseResponse<string>(500, context.Exception.ToString()));
+            return context.Response.WriteAsync(result);
+        },
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+            var result = JsonConvert.SerializeObject(new BaseResponse<string>(401,"You are not Authorized"));
+            return context.Response.WriteAsync(result);
+        },
+        OnForbidden = context =>
+        {
+            context.Response.StatusCode = 403;
+            context.Response.ContentType = "application/json";
+            var result = JsonConvert.SerializeObject(new BaseResponse<string>(403,"You are not authorized to access this resource"));
+            return context.Response.WriteAsync(result);
+        },
+    };
+});
 var app = builder.Build();
 builder.Services.SeedData(app);
 

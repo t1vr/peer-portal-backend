@@ -39,7 +39,7 @@ namespace WebAPI.Controllers.v1
         [HttpPost("authenticate")]
         public async Task<BaseResponse<UserResponseModel>> AuthenticateAsync(AuthenticationRequest request)
         {
-            return Ok(await _accountService.AuthenticateAsync(request);
+            return await _accountService.AuthenticateAsync(request);
         }
     }
 }
