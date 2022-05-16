@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Common
 {
-    public abstract class BaseEntity
+    public interface IBaseEntity
     {
-        public virtual int Id { get; set; }
+        public string Id { get; set; }
     }
 }
