@@ -15,12 +15,14 @@ namespace Infrastructure.Persistence.Context
         {
 
         }
+        public DbSet<Team> Teams { get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             return base.SaveChangesAsync(cancellationToken);
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<TeamUser>().HasKey(tc => new { tc.ApplicationUserId, tc.TeamId });
             base.OnModelCreating(builder);
         }
     }

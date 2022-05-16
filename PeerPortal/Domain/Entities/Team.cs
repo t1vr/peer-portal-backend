@@ -12,6 +12,6 @@ namespace Domain.Entities
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<ApplicationUser> ApplicationUsers { get; set; }
+        public ICollection<TeamUser> TeamUsers { get; set; }
     }
 }
