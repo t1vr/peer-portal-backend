@@ -18,14 +18,14 @@ namespace Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            _context.Set<T>().Add(entity);
+            await _context.Set<T>().AddAsync(entity);
         }
 
-        public void AddRange(IEnumerable<T> entities)
+        public async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            _context.Set<T>().AddRange(entities);
+           await _context.Set<T>().AddRangeAsync(entities);
         }
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)

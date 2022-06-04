@@ -12,11 +12,13 @@ namespace Infrastructure.Persistence.Repositories
     {
         private readonly ApplicationDbContext _context;
         public IUserRepository Users { get; private set; }
+        public ITeamRepository Teams { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext context,IUserRepository userRepository)
+        public UnitOfWork(ApplicationDbContext context,IUserRepository userRepository, ITeamRepository teams)
         {
             _context = context;
             Users = userRepository;
+            Teams = teams;
         }
 
         public async Task<int> SaveChangeAsync()
