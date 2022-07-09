@@ -1,9 +1,9 @@
 ﻿using Application.IServices;
 using Application.Request_Model;
 using Application.ResponseModel;
+using Application.Settings;
 using Application.Wrapper;
 using Domain.Entities;
-using Domain.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;

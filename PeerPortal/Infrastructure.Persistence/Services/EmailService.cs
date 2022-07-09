@@ -1,6 +1,6 @@
 ﻿using Application.IServices;
+using Application.Settings;
 using Application.Wrapper;
-using Domain.Settings;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;

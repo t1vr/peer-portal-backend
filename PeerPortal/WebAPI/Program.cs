@@ -1,9 +1,9 @@
 using Application.IRepositories;
 using Application.IServices;
 using Application.Services;
+using Application.Settings;
 using Application.Wrapper;
 using Domain.Entities;
-using Domain.Settings;
 using FluentValidation.AspNetCore;
 using Infrastructure.Persistence.Context;
 using Infrastructure.Persistence.Extensions;
@@ -139,9 +139,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web v1"));
 }
+app.UseRouting();
+
 // global error handler
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

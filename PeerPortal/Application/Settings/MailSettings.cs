@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Settings
+namespace Application.Settings
 {
     public class MailSettings
     {
@@ -14,6 +14,5 @@ namespace Domain.Settings
         public string SmtpUser { get; set; }
         public string SmtpPass { get; set; }
         public string DisplayName { get; set; }
-
     }
 }
