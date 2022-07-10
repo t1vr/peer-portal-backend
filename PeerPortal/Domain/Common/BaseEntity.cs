@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Common
 {
-    public interface IBaseEntity
+
+    public class BaseEntity
     {
         public string Id { get; set; }
+    }
+
+    public class BaseEntity<T> where T:class
+    {
+        public T Id { get; set; }
     }
 }
