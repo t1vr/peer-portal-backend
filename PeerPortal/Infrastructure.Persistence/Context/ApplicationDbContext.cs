@@ -17,6 +17,7 @@ namespace Infrastructure.Persistence.Context
         }
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamUser> TeamUsers { get; set; }
+        public DbSet<MemberRole> MemberRoles { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -24,7 +25,7 @@ namespace Infrastructure.Persistence.Context
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<TeamUser>().HasKey(tc => new { tc.ApplicationUserId, tc.TeamId });
+            builder.Entity<MemberRole>().HasKey(mr => new { mr.TeamUserId, mr.ApplicationRoleId });
             base.OnModelCreating(builder);
         }
     }

@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220710194930_composite key removed from TeamUser table")]
+    partial class compositekeyremovedfromTeamUsertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,21 +96,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.MemberRole", b =>
-                {
-                    b.Property<string>("TeamUserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ApplicationRoleId")
-                        .HasColumnType("text");
-
-                    b.HasKey("TeamUserId", "ApplicationRoleId");
-
-                    b.HasIndex("ApplicationRoleId");
-
-                    b.ToTable("MemberRoles");
-                });
-
             modelBuilder.Entity("Domain.Entities.Team", b =>
                 {
                     b.Property<string>("Id")
@@ -185,10 +172,6 @@ namespace Infrastructure.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -204,8 +187,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -314,32 +295,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
-
-                    b.HasDiscriminator().HasValue("ApplicationRole");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MemberRole", b =>
-                {
-                    b.HasOne("Domain.Entities.ApplicationRole", "ApplicationRole")
-                        .WithMany("MemberRoles")
-                        .HasForeignKey("ApplicationRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.TeamUser", "TeamUser")
-                        .WithMany("MemberRoles")
-                        .HasForeignKey("TeamUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationRole");
-
-                    b.Navigation("TeamUser");
-                });
-
             modelBuilder.Entity("Domain.Entities.TeamUser", b =>
                 {
                     b.HasOne("Domain.Entities.ApplicationUser", "ApplicationUser")
@@ -418,16 +373,6 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Team", b =>
                 {
                     b.Navigation("TeamUsers");
-                });
-
-            modelBuilder.Entity("Domain.Entities.TeamUser", b =>
-                {
-                    b.Navigation("MemberRoles");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
-                {
-                    b.Navigation("MemberRoles");
                 });
 #pragma warning restore 612, 618
         }
