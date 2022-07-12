@@ -14,6 +14,7 @@ namespace Domain.Entities
         public string TeamId { get; set; }
         public Team Team { get; set; }
         public ICollection<MemberRole> MemberRoles { get; set; }
+        public ICollection<Permission> Permissions { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string LastModifiedBy { get; set; }
