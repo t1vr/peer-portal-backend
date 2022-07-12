@@ -18,6 +18,7 @@ namespace Infrastructure.Persistence.Context
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamUser> TeamUsers { get; set; }
         public DbSet<MemberRole> MemberRoles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -25,7 +26,7 @@ namespace Infrastructure.Persistence.Context
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<MemberRole>().HasKey(mr => new { mr.TeamUserId, mr.ApplicationRoleId });
+            builder.Entity<MemberRole>().HasKey(mr => new { mr.TeamUserId, mr.ApplicationRoleId });//MemberRole table has composite primary key
             base.OnModelCreating(builder);
         }
     }
