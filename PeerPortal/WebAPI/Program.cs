@@ -1,9 +1,9 @@
-using Application.IRepositories;
 using Application.IServices;
 using Application.Services;
 using Application.Settings;
 using Application.Wrapper;
 using Domain.Entities;
+using Domain.IRepositories;
 using FluentValidation.AspNetCore;
 using Infrastructure.Persistence.Context;
 using Infrastructure.Persistence.Extensions;

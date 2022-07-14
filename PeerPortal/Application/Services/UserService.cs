@@ -1,20 +1,15 @@
-﻿using Application.IRepositories;
-using Application.IServices;
+﻿using Application.IServices;
 using Application.Request_Model;
 using Application.ResponseModel;
 using Application.Wrapper;
 using Domain.Entities;
+using Domain.IRepositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Application.Services
 {

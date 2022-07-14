@@ -1,15 +1,11 @@
-﻿using Application.IRepositories;
-using Application.IServices;
+﻿using Application.IServices;
 using Application.Request_Model;
 using Application.Wrapper;
 using Domain.Entities;
+using Domain.IRepositories;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Application.Services
 {
