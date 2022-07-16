@@ -45,16 +45,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
+#region dependency injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ITeamService, TeamService>();
-
-
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+#endregion
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.Configure<IdentityOptions>(options =>
