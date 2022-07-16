@@ -12,7 +12,7 @@ namespace Domain.Common
         public string Id { get; set; }
     }
 
-    public class BaseEntity<T> where T:class
+    public class BaseEntity<T> 
     {
         public T Id { get; set; }
     }

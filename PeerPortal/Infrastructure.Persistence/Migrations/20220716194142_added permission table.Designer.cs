@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220711220626_ManyToMany Relation Added between TeamUser and Permission")]
-    partial class ManyToManyRelationAddedbetweenTeamUserandPermission
+    [Migration("20220716194142_added permission table")]
+    partial class addedpermissiontable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -113,8 +113,11 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Permission", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("Id"));
 
                     b.Property<string>("PermissionName")
                         .IsRequired()
@@ -330,21 +333,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PermissionTeamUser", b =>
-                {
-                    b.Property<string>("PermissionsId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TeamUsersId")
-                        .HasColumnType("text");
-
-                    b.HasKey("PermissionsId", "TeamUsersId");
-
-                    b.HasIndex("TeamUsersId");
-
-                    b.ToTable("PermissionTeamUser");
-                });
-
             modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
@@ -437,21 +425,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PermissionTeamUser", b =>
-                {
-                    b.HasOne("Domain.Entities.Permission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.TeamUser", null)
-                        .WithMany()
-                        .HasForeignKey("TeamUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

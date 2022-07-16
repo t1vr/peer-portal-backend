@@ -4,7 +4,7 @@
 
 namespace Infrastructure.Persistence.Migrations
 {
-    public partial class ManyToManyRelationAddedbetweenTeamUserandPermission : Migration
+    public partial class ManytomanyrestoredbetweenTeamUserandPermission : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "PermissionTeamUser",
                 columns: table => new
                 {
-                    PermissionsId = table.Column<string>(type: "text", nullable: false),
+                    PermissionsId = table.Column<short>(type: "smallint", nullable: false),
                     TeamUsersId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

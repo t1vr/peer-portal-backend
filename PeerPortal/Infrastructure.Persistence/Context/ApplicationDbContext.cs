@@ -26,6 +26,7 @@ namespace Infrastructure.Persistence.Context
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Permission>().Property(permission => permission.Id).ValueGeneratedOnAdd();
             builder.Entity<MemberRole>().HasKey(mr => new { mr.TeamUserId, mr.ApplicationRoleId });//MemberRole table has composite primary key
             base.OnModelCreating(builder);
         }

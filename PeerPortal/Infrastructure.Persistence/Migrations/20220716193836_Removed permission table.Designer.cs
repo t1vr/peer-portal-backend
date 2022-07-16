@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220716193836_Removed permission table")]
+    partial class Removedpermissiontable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,23 +109,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("ApplicationRoleId");
 
                     b.ToTable("MemberRoles");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Permission", b =>
-                {
-                    b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("Id"));
-
-                    b.Property<string>("PermissionName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Team", b =>
@@ -331,21 +316,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PermissionTeamUser", b =>
-                {
-                    b.Property<short>("PermissionsId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("TeamUsersId")
-                        .HasColumnType("text");
-
-                    b.HasKey("PermissionsId", "TeamUsersId");
-
-                    b.HasIndex("TeamUsersId");
-
-                    b.ToTable("PermissionTeamUser");
-                });
-
             modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
@@ -438,21 +408,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PermissionTeamUser", b =>
-                {
-                    b.HasOne("Domain.Entities.Permission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.TeamUser", null)
-                        .WithMany()
-                        .HasForeignKey("TeamUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
