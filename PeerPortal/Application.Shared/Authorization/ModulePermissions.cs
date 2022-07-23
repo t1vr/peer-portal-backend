@@ -31,9 +31,9 @@ namespace Application.Shared.Authorization
         public static List<Permission> GeneratePermissionForModule<T>(T module) where T : class
         {
             var generatedPermissions= new List<Permission>();
-            foreach (FieldInfo propertyInfo in typeof(T).GetFields(BindingFlags.Public|BindingFlags.Static))
+            foreach (FieldInfo fieldInfo in typeof(T).GetFields(BindingFlags.Public|BindingFlags.Static))
             {
-                string permissionName = $"Permissions.{module.GetType().Name}.{(string)propertyInfo.GetValue(module)}";
+                string permissionName = $"Permissions.{typeof(T).Name}.{fieldInfo.Name}";
                 generatedPermissions.Add(new Permission { PermissionName= permissionName });
             }
             return generatedPermissions;

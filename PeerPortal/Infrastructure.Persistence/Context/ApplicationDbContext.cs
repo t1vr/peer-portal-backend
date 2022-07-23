@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>,IdentityUserRole<string>, IdentityUserLogin<string>,IdentityRoleClaim<string>, IdentityUserToken<string>
+        >
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
@@ -20,10 +22,13 @@ namespace Infrastructure.Persistence.Context
         public DbSet<MemberRole> MemberRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
 
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             return base.SaveChangesAsync(cancellationToken);
         }
+
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Permission>().Property(permission => permission.Id).ValueGeneratedOnAdd();
