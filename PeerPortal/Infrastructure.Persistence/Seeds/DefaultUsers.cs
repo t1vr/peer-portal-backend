@@ -1,15 +1,16 @@
-﻿using Application.Enums;
+﻿using Application.Shared.Enum;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
-
 namespace Infrastructure.Persistence.Seeds
 {
+    /// <summary>
+    /// Seed class for seeding users
+    /// </summary>
     public static class DefaultUsers
     {
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
-            //Seed Default User
             var defaultUser = new ApplicationUser
             {
                 UserName = "basicuser",

@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace WebAPI.Validators
 {
-    public class TeamRequestValidator:AbstractValidator<TeamRequest>
+    public class TeamRequestValidator:AbstractValidator<CreateTeamRequest>
     {
         public TeamRequestValidator()
         {

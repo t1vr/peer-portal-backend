@@ -1,7 +1,9 @@
 ﻿
-
 namespace Domain.Entities
 {
+    /// <summary>
+    /// Joining entity Many to many between ApplicationUser and ApplicationRole
+    /// </summary>
     public class MemberRole
     {
         public string TeamUserId { get; set; }

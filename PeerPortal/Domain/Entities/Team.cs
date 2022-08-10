@@ -17,5 +17,10 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; set; }
         public string LastModifiedBy { get; set; }
         public DateTime? LastModifiedAt { get; set; }
+
+        public static implicit operator Team(Team v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

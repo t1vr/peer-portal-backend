@@ -2,7 +2,6 @@
 using Domain.IRepositories;
 using Infrastructure.Persistence.Context;
 
-
 namespace Infrastructure.Persistence.Repositories
 {
     public class TeamRepository:GenericRepository<Team>,ITeamRepository

@@ -1,19 +1,18 @@
-﻿using Application.Enums;
+﻿using Application.Shared.Enum;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Seeds
 {
+    /// <summary>
+    /// Seed class for Roles
+    /// </summary>
     public static class DefaultRoles
     {
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             //Seed Roles
+            var a = new ApplicationRole(Roles.SuperAdmin.ToString());
             await roleManager.CreateAsync(new ApplicationRole(Roles.SuperAdmin.ToString()));
             await roleManager.CreateAsync(new ApplicationRole(Roles.Admin.ToString()));
         }
