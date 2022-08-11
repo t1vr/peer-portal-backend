@@ -9,6 +9,7 @@ namespace Domain.IRepositories
         IUserRepository Users { get; set; }
         ITeamRepository Teams { get; set; }
         IPermissionRepository Permissions { get; set; }
+        ITeamUserRepository TeamUsers { get; set; }
         Task<int> SaveChangeAsync();
     }
 }
