@@ -2,7 +2,7 @@
 namespace Domain.Entities
 {
     /// <summary>
-    /// Joining entity Many to many between ApplicationUser and ApplicationRole
+    /// Joining entity class Many to many between ApplicationUser and ApplicationRole
     /// </summary>
     public class MemberRole
     {

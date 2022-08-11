@@ -1,6 +1,5 @@
 ﻿using Domain.Common;
 
-
 namespace Domain.Entities
 {
     public class Permission:BaseEntity<short>
