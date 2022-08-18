@@ -1,6 +1,7 @@
 using Application.IServices;
 using Application.Services;
 using Application.Settings;
+using Application.Shared.Session;
 using Application.Wrapper;
 using Domain.Entities;
 using Domain.IRepositories;
@@ -18,6 +19,7 @@ using Newtonsoft.Json;
 using Serilog;
 using System.Reflection;
 using System.Text;
+using WebAPI.Filters;
 using WebAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,19 +35,25 @@ builder.Logging.AddSerilog();
 #endregion
 Log.Information("Application Starting");
 
-builder.Services.AddControllers().AddFluentValidation(s =>
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<SessionInitializationActionFilter>();
+}).AddFluentValidation(s =>
 {
     s.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-});
+}).AddNewtonsoftJson(options=> options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection"),
+    options
+    .UseLazyLoadingProxies()
+    .UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection"),
         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 });
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
-#region dependency injection
+#region Dependency Injection
+builder.Services.AddScoped<UserSession>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -54,6 +62,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<ITeamUserRepository, TeamUserRepository>();
+builder.Services.AddScoped<IMemberRoleRepository, MemberRoleRepository>();
 #endregion
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();

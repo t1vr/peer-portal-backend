@@ -6,6 +6,6 @@ namespace Domain.Entities
     {
         public ApplicationRole() : base(){ }
         public ApplicationRole(string roleName) : base(roleName){ }
-        public ICollection<MemberRole> MemberRoles { get; set; }
+        public virtual ICollection<MemberRole> MemberRoles { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace Domain.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public ICollection<TeamUser> Teams { get; set; }
+        public virtual ICollection<TeamUser> TeamUsers { get; set; }
     }
 }
