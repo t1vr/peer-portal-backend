@@ -25,27 +25,30 @@ namespace WebAPI.Middleware
             }
             catch (Exception error)
             {
-                var response = context.Response;
-                response.ContentType = "application/json";
-
-                switch (error)
+                if (!context.Response.HasStarted)
                 {
-                    case AppException e:
-                        // custom application error
-                        response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        break;
-                    case KeyNotFoundException e:
-                        // not found error
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
-                    default:
-                        // unhandled error
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        break;
-                }
+                    var response = context.Response;
+                    response.ContentType = "application/json";
 
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
-                await response.WriteAsync(result);
+                    switch (error)
+                    {
+                        case AppException e:
+                            // custom application error
+                            response.StatusCode = (int)HttpStatusCode.BadRequest;
+                            break;
+                        case KeyNotFoundException e:
+                            // not found error
+                            response.StatusCode = (int)HttpStatusCode.NotFound;
+                            break;
+                        default:
+                            // unhandled error
+                            response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            break;
+                    }
+
+                    var result = JsonSerializer.Serialize(new { message = error?.Message });
+                    await response.WriteAsync(result);
+                }
             }
         }
     }

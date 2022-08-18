@@ -7,8 +7,8 @@ namespace WebAPI.Filters
 {
     public class SessionInitializationActionFilter : IAsyncActionFilter
     {
-        private readonly Session _session;
-        public SessionInitializationActionFilter(Session session)
+        private readonly UserSession _session;
+        public SessionInitializationActionFilter(UserSession session)
         {
             _session = session;
         }
