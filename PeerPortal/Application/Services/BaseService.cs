@@ -8,13 +8,13 @@ namespace Application.Services
     /// </summary>
     public class BaseService : IBaseService
     {
-        private readonly Session _session;
+        private readonly UserSession _session;
 
         /// <summary>
         /// Base Constructor
         /// </summary>
         /// <param name="session"></param>
-        public BaseService(Session session)
+        public BaseService(UserSession session)
         {
             _session = session;
         }

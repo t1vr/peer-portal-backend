@@ -39,6 +39,11 @@ namespace Infrastructure.Persistence.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
+        public async Task<T?> GetByIdAsync(string id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+
         public void Remove(T entity)
         {
             _context.Set<T>().Remove(entity);
