@@ -1,6 +1,6 @@
-﻿using Application.ResponseModel;
-using Domain.Entities;
+﻿using Application.Shared.Dtos;
 using AutoMapper;
+using Domain.Entities;
 
 namespace Application.Mapper
 {
@@ -11,7 +11,7 @@ namespace Application.Mapper
     {
         public AutoMapperProfileConfig()
         {
-            CreateMap<Team, TeamResponse>().ReverseMap();
+            CreateMap<Team, GetTeamDto>().ReverseMap();
         }
     }
 }

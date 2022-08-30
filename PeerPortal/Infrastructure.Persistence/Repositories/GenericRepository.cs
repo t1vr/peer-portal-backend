@@ -3,7 +3,6 @@ using Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-
 namespace Infrastructure.Persistence.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
@@ -53,5 +52,11 @@ namespace Infrastructure.Persistence.Repositories
         {
             _context.Set<T>().RemoveRange(entities);
         }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return _context.Set<T>();
+        }
+
     }
 }

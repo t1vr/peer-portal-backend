@@ -1,13 +1,11 @@
 ﻿using Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.ResponseModel
+namespace Application.Shared.Dtos
 {
-    public class TeamResponse:IAuditableBaseEntity
+    /// <summary>
+    /// Dto model for Team 
+    /// </summary>
+    public class GetTeamDto: IAuditableBaseEntity
     {
         public Guid Id { get; set; }
         public string title { get; set; }
