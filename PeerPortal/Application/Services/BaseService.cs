@@ -27,5 +27,10 @@ namespace Application.Services
         {
             return _session.UserId;
         }
+
+        public string GetCurrentUsername()
+        {
+            return _session.Username;
+        }
     }
 }

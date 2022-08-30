@@ -7,5 +7,12 @@ namespace Domain.IRepositories
     /// </summary>
     public interface ITeamRepository : IGenericRepository<Team>
     {
+        /// <summary>
+        /// Gets team by id
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="id"></param>
+        /// <returns>Team</returns>
+        Task<Team?> GetAsync(IQueryable<Team> query, string id);
     }
 }

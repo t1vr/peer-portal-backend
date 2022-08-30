@@ -50,12 +50,14 @@ namespace Infrastructure.Persistence.Context
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = _userSession.UserId;
+                        entry.Entity.CreatedBy = _userSession.Username;
                         entry.Entity.CreatedAt = DateTime.UtcNow;
                         break;
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = _userSession.UserId;
+                        entry.Entity.LastModifiedBy = _userSession.Username;
                         entry.Entity.LastModifiedAt = DateTime.UtcNow;
+                        break;
+                    default:
                         break;
                 }
             }

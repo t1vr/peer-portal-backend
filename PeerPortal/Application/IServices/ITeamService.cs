@@ -1,5 +1,8 @@
 ﻿using Application.Request_Model;
+using Application.ResponseModel;
+using Application.Shared.Dtos;
 using Application.Wrapper;
+using Domain.Common;
 using Domain.Entities;
 
 namespace Application.IServices
@@ -12,8 +15,8 @@ namespace Application.IServices
         /// <summary>
         /// This method applies different logic to create a team,assigns team creator Admin role
         /// </summary>
-        /// <param name="teamRequest"></param>
+        /// <param name="createTeamDto"></param>
         /// <returns>returns the newly created team</returns>
-        public Task<BaseResponse<Team>> CreateTeamAsync(CreateTeamRequest teamRequest);
+        public Task<BaseResponse<GetTeamDto>> CreateTeamAsync(CreateTeamDto createTeamDto);
     }
 }

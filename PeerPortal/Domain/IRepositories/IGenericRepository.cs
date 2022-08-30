@@ -12,5 +12,6 @@ namespace Domain.IRepositories
         Task AddRangeAsync(IEnumerable<T> entities);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
+        IQueryable<T> GetQueryable();
     }
 }

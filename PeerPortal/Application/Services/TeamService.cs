@@ -1,35 +1,80 @@
 ﻿using Application.IServices;
-using Application.Request_Model;
+using Application.Shared.Dtos;
+using Application.Shared.Enum;
+using Application.Shared.Session;
 using Application.Wrapper;
+using AutoMapper;
 using Domain.Entities;
 using Domain.IRepositories;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-
+using Microsoft.AspNetCore.Identity;
+using Serilog;
 
 namespace Application.Services
 {
-    public class TeamService : ITeamService
+    /// <summary>
+    /// Team Service class
+    /// </summary>
+    public class TeamService : BaseService, ITeamService
     {
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IUserRepository _userRepository;
-        public TeamService(IHttpContextAccessor httpContextAccessor,IUserRepository userRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly UserSession _session;
+        private readonly IMapper _mapper;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="unitOfWork"></param>
+        /// <param name="roleManager"></param>
+        /// <param name="session"></param>
+        /// <param name="mapper"></param>
+        public TeamService(IUnitOfWork unitOfWork,
+            RoleManager<ApplicationRole> roleManager,
+            UserSession session,
+            IMapper mapper) : base(session)
         {
-            _contextAccessor = httpContextAccessor;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
+            _roleManager = roleManager;
+            _session = session;
+            _mapper = mapper;
         }
-        public async Task<BaseResponse<Team>> CreateTeamAsync(TeamRequest teamRequest)
+
+        ///<inheritdoc [cref="ITeamService.CreateTeamAsync"] [path=""]/>
+        public async Task<BaseResponse<GetTeamDto>> CreateTeamAsync(CreateTeamDto teamRequest)
         {
-            var usernameFromToken = _contextAccessor?.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if(usernameFromToken is null)
+            var team = new Team
             {
-                return new BaseResponse<Team>(400, "Null token claims");
-            }
-            if(usernameFromToken is not null)
+                Id = Guid.NewGuid().ToString(),
+                Name = teamRequest.Name,
+                Description = teamRequest.Description,
+            };
+            var teamUser = new TeamUser
             {
-                var user = await _userRepository.GetUserByUserNameAsync(usernameFromToken);
+                Id = Guid.NewGuid().ToString(),
+                ApplicationUserId = GetCurrentUserId(),
+                TeamId = team.Id,
+            };
+            try
+            {
+                await _unitOfWork.Teams.AddAsync(team);
+                await _unitOfWork.TeamUsers.AddAsync(teamUser);
+                var role = await _roleManager.FindByNameAsync(Roles.Admin.ToString());
+                var memberRole = new MemberRole
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    TeamUserId = teamUser.Id,
+                    ApplicationRoleId = role.Id,
+                };
+                await _unitOfWork.MemberRoles.AddAsync(memberRole);
+                await _unitOfWork.SaveChangeAsync();
             }
-            return new BaseResponse<Team>(400, "Null token claims");
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return new BaseResponse<GetTeamDto>("Team creation failed");
+            }
+            var teamResponseDto = _mapper.Map<GetTeamDto>(team);
+            return new BaseResponse<GetTeamDto>(true, teamResponseDto, "Successfully created team");
         }
 
     }

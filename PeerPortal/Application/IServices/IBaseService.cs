@@ -10,5 +10,11 @@
         /// </summary>
         /// <returns>Returns the user id</returns>
         public string GetCurrentUserId();
+
+        /// <summary>
+        /// Gets the currently logged in user name
+        /// </summary>
+        /// <returns>Returns the user id</returns>
+        public string GetCurrentUsername();
     }
 }
