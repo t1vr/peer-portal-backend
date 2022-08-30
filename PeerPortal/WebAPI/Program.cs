@@ -1,4 +1,5 @@
 using Application.IServices;
+using Application.Mapper;
 using Application.Services;
 using Application.Settings;
 using Application.Shared.Session;
@@ -46,11 +47,11 @@ builder.Services.AddControllers(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options
-    .UseLazyLoadingProxies()
     .UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection"),
         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 });
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfileConfig));
 
 #region Dependency Injection
 builder.Services.AddScoped<UserSession>();
