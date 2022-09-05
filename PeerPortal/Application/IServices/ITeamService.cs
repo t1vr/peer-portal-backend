@@ -1,9 +1,5 @@
-﻿using Application.Request_Model;
-using Application.ResponseModel;
-using Application.Shared.Dtos;
+﻿using Application.Shared.Dtos;
 using Application.Wrapper;
-using Domain.Common;
-using Domain.Entities;
 
 namespace Application.IServices
 {
@@ -18,5 +14,12 @@ namespace Application.IServices
         /// <param name="createTeamDto"></param>
         /// <returns>returns the newly created team</returns>
         public Task<BaseResponse<GetTeamDto>> CreateTeamAsync(CreateTeamDto createTeamDto);
+
+        /// <summary>
+        /// This method Gets Team from by team Id.
+        /// </summary>
+        /// <param name="teamId"></param>
+        /// <returns>returns team details of the given team id</returns>
+        public Task<BaseResponse<GetTeamDto>> GetTeamAsync(string teamId);
     }
 }

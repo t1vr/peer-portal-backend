@@ -12,9 +12,9 @@ using System.Security.Claims;
 namespace WebAPI.Controllers.v1
 {
     [Route("api/[controller]")]
- /*   [Authorize]*/
+    /*   [Authorize]*/
     [ApiController]
-    public class TeamController:BaseApiController
+    public class TeamController : BaseApiController
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ITeamService _teamService;
@@ -33,6 +33,17 @@ namespace WebAPI.Controllers.v1
         public async Task<BaseResponse<GetTeamDto>> CreateAsync(CreateTeamDto createTeamDto)
         {
             return await _teamService.CreateTeamAsync(createTeamDto);
+        }
+
+        /// <summary>
+        /// This Api gets team details given a team id
+        /// </summary>
+        /// <param name="teamId"></param>
+        /// <returns>Returns Team Details</returns>
+        [HttpGet("get/{teamId}")]
+        public async Task<BaseResponse<GetTeamDto>> GetAsync([FromRoute] string teamId)
+        {
+            return await _teamService.GetTeamAsync(teamId);
         }
     }
 }
