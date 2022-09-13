@@ -9,7 +9,6 @@ namespace WebAPI.Validators
         {
             RuleFor(authenticationRequest => authenticationRequest.Email).EmailAddress().NotEmpty();
             RuleFor(authenticationRequest => authenticationRequest.Password).NotEmpty();
-
         }
     }
 }
