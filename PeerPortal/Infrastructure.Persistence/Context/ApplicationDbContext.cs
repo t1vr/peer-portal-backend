@@ -20,6 +20,7 @@ namespace Infrastructure.Persistence.Context
         public DbSet<TeamUser> TeamUsers { get; set; }
         public DbSet<MemberRole> MemberRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<TeamUserPermission> TeamUserPermissions { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -34,6 +35,11 @@ namespace Infrastructure.Persistence.Context
 
             builder.Entity<TeamUser>().HasOne(x => x.ApplicationUser).WithMany(x => x.TeamUsers).HasForeignKey(x => x.ApplicationUserId);
             builder.Entity<TeamUser>().HasOne(x => x.Team).WithMany(x => x.TeamUsers).HasForeignKey(x => x.TeamId);
+
+            builder.Entity<TeamUserPermission>().HasOne(x => x.TeamUser).WithMany(x => x.TeamUserPermissions);
+            builder.Entity<TeamUserPermission>().HasOne(x => x.Permission).WithMany(x => x.TeamUserPermissions);
+            builder.Entity<TeamUserPermission>().HasKey(x => new { x.TeamUserId, x.PermissionId });
+
             base.OnModelCreating(builder);
         }
 
@@ -56,8 +62,6 @@ namespace Infrastructure.Persistence.Context
                     case EntityState.Modified:
                         entry.Entity.LastModifiedBy = _userSession.Username;
                         entry.Entity.LastModifiedAt = DateTime.UtcNow;
-                        break;
-                    default:
                         break;
                 }
             }

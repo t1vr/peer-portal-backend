@@ -12,17 +12,43 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220716194258_Many to many restored between TeamUser and Permission")]
-    partial class ManytomanyrestoredbetweenTeamUserandPermission
+    [Migration("20220913232704_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
 
             modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
                 {
@@ -98,15 +124,22 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MemberRole", b =>
                 {
-                    b.Property<string>("TeamUserId")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<string>("ApplicationRoleId")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("TeamUserId", "ApplicationRoleId");
+                    b.Property<string>("TeamUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ApplicationRoleId");
+
+                    b.HasIndex("TeamUserId");
 
                     b.ToTable("MemberRoles");
                 });
@@ -147,7 +180,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastModifiedBy")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -179,7 +211,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastModifiedBy")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TeamId")
@@ -195,36 +226,19 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("TeamUsers");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Domain.Entities.TeamUserPermission", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("TeamUserId")
                         .HasColumnType("text");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
+                    b.Property<short>("PermissionId")
+                        .HasColumnType("smallint");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.HasKey("TeamUserId", "PermissionId");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                    b.HasIndex("PermissionId");
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
+                    b.ToTable("TeamUserPermissions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -333,28 +347,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PermissionTeamUser", b =>
-                {
-                    b.Property<short>("PermissionsId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("TeamUsersId")
-                        .HasColumnType("text");
-
-                    b.HasKey("PermissionsId", "TeamUsersId");
-
-                    b.HasIndex("TeamUsersId");
-
-                    b.ToTable("PermissionTeamUser");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
-
-                    b.HasDiscriminator().HasValue("ApplicationRole");
-                });
-
             modelBuilder.Entity("Domain.Entities.MemberRole", b =>
                 {
                     b.HasOne("Domain.Entities.ApplicationRole", "ApplicationRole")
@@ -377,7 +369,7 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.TeamUser", b =>
                 {
                     b.HasOne("Domain.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany("Teams")
+                        .WithMany("TeamUsers")
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -393,9 +385,28 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("Domain.Entities.TeamUserPermission", b =>
+                {
+                    b.HasOne("Domain.Entities.Permission", "Permission")
+                        .WithMany("TeamUserPermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.TeamUser", "TeamUser")
+                        .WithMany("TeamUserPermissions")
+                        .HasForeignKey("TeamUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("TeamUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Domain.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -422,7 +433,7 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Domain.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -444,24 +455,19 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PermissionTeamUser", b =>
+            modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
                 {
-                    b.HasOne("Domain.Entities.Permission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.TeamUser", null)
-                        .WithMany()
-                        .HasForeignKey("TeamUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("MemberRoles");
                 });
 
             modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
                 {
-                    b.Navigation("Teams");
+                    b.Navigation("TeamUsers");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Permission", b =>
+                {
+                    b.Navigation("TeamUserPermissions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Team", b =>
@@ -472,11 +478,8 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.TeamUser", b =>
                 {
                     b.Navigation("MemberRoles");
-                });
 
-            modelBuilder.Entity("Domain.Entities.ApplicationRole", b =>
-                {
-                    b.Navigation("MemberRoles");
+                    b.Navigation("TeamUserPermissions");
                 });
 #pragma warning restore 612, 618
         }
