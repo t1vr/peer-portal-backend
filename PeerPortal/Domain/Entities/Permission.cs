@@ -2,9 +2,9 @@
 
 namespace Domain.Entities
 {
-    public class Permission:BaseEntity<short>
+    public class Permission : BaseEntity<short>
     {
         public string PermissionName { get; set; }
-        public virtual ICollection<TeamUser> TeamUsers { get; set; }
+        public virtual ICollection<TeamUserPermission> TeamUserPermissions { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Domain.Entities
         public string TeamId { get; set; }
         public virtual Team Team { get; set; }
         public virtual ICollection<MemberRole> MemberRoles { get; set; }
-        public virtual ICollection<Permission> Permissions { get; set; }
+        public virtual ICollection<TeamUserPermission> TeamUserPermissions { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? LastModifiedBy { get; set; }

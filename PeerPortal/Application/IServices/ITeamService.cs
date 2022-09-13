@@ -6,7 +6,7 @@ namespace Application.IServices
     /// <summary>
     /// Interface to interact with team
     /// </summary>
-    public interface ITeamService
+    public interface ITeamService : IBaseService
     {
         /// <summary>
         /// This method applies different logic to create a team,assigns team creator Admin role
