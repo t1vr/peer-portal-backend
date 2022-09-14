@@ -11,22 +11,25 @@ namespace Infrastructure.Persistence.Repositories
         public IPermissionRepository Permissions { get; set; }
         public ITeamUserRepository TeamUsers { get; set; }
         public IMemberRoleRepository MemberRoles { get; set; }
+        public ITeamUserPermissionRepository TeamUserPermissions { get; set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="user"></param>
+        /// <param name="users"></param>
         /// <param name="teams"></param>
         /// <param name="permissions"></param>
         /// <param name="teamUsers"></param>
         /// <param name="memberRoles"></param>
+        /// <param name="teamUserPermissions"></param>
         public UnitOfWork(ApplicationDbContext context,
-            IUserRepository users, 
-            ITeamRepository teams, 
+            IUserRepository users,
+            ITeamRepository teams,
             IPermissionRepository permissions,
             ITeamUserRepository teamUsers,
-            IMemberRoleRepository memberRoles)
+            IMemberRoleRepository memberRoles,
+            ITeamUserPermissionRepository teamUserPermissions)
         {
             _context = context;
             Users = users;
@@ -34,6 +37,7 @@ namespace Infrastructure.Persistence.Repositories
             Permissions = permissions;
             TeamUsers = teamUsers;
             MemberRoles = memberRoles;
+            TeamUserPermissions = teamUserPermissions;
         }
 
         public async Task<int> SaveChangeAsync()

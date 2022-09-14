@@ -11,6 +11,7 @@ namespace Domain.IRepositories
         IPermissionRepository Permissions { get; set; }
         ITeamUserRepository TeamUsers { get; set; }
         IMemberRoleRepository MemberRoles { get; set; }
+        ITeamUserPermissionRepository TeamUserPermissions { get; set; }
         Task<int> SaveChangeAsync();
     }
 }

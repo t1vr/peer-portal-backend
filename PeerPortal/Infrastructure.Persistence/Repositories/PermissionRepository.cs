@@ -28,6 +28,10 @@ namespace Infrastructure.Persistence.Repositories
         /// <returns>Counts of newly created records</returns>
         public Task<int> CreatePermission(IList<Permission> permissions)
         {
+            if (_context.Permissions.Any())
+            {
+                return Task.FromResult(0);
+            }
             _context.Permissions.AddRangeAsync(permissions);
             return _context.SaveChangesAsync();
         }
