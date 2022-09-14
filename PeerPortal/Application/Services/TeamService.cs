@@ -43,22 +43,18 @@ namespace Application.Services
         ///<inheritdoc [cref="ITeamService.CreateTeamAsync"] [path=""]/>
         public async Task<BaseResponse<GetTeamDto>> CreateTeamAsync(CreateTeamDto teamRequest)
         {
-            var team = new Team
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = teamRequest.Name,
-                Description = teamRequest.Description,
-            };
             var teamUser = new TeamUser
             {
                 Id = Guid.NewGuid().ToString(),
                 ApplicationUserId = GetCurrentUserId(),
-                TeamId = team.Id,
             };
+            var team=_mapper.Map<Team>(teamRequest);
+            team.Id = Guid.NewGuid().ToString();
+            team.TeamUsers = new List<TeamUser>() { teamUser };
+            
             try
             {
                 await _unitOfWork.Teams.AddAsync(team);
-                await _unitOfWork.TeamUsers.AddAsync(teamUser);
                 var role = await _roleManager.FindByNameAsync(Roles.Admin.ToString());
                 var memberRole = new MemberRole
                 {
@@ -75,23 +71,24 @@ namespace Application.Services
                 return new BaseResponse<GetTeamDto>("Team creation failed");
             }
 
-            var initialTeamMemberCount = 1;
+            var query = _unitOfWork.Teams.GetQueryable().Include(team => team.TeamUsers).ThenInclude(x => x.ApplicationUser);
+            team = await _unitOfWork.Teams.GetAsync(query, team.Id);
+
             var teamResponseDto = _mapper.Map<GetTeamDto>(team);
-            teamResponseDto.MemberCount = initialTeamMemberCount;
             return new BaseResponse<GetTeamDto>(true, teamResponseDto, "Successfully created team");
         }
+
 
         ///<inheritdoc [cref="ITeamService.GetTeamAsync"] [path=""]/>
         public async Task<BaseResponse<GetTeamDto>> GetTeamAsync(string teamId)
         {
-            if(teamId is null)
+            if (teamId is null)
             {
                 return new BaseResponse<GetTeamDto>("Id cannot be null");
             }
-            var query = _unitOfWork.Teams.GetQueryable().Include(team => team.TeamUsers);
-            var team=await _unitOfWork.Teams.GetAsync(query, teamId);
+            var query = _unitOfWork.Teams.GetQueryable().Include(team => team.TeamUsers).ThenInclude(x => x.ApplicationUser);
+            var team = await _unitOfWork.Teams.GetAsync(query, teamId);
             var getTeamDto = _mapper.Map<GetTeamDto>(team);
-            getTeamDto.MemberCount = await _unitOfWork.TeamUsers.GetQueryable().Where(teamUser => teamUser.TeamId == teamId).CountAsync();
             return new BaseResponse<GetTeamDto>(true, getTeamDto, "Successfully retrieved team");
         }
     }

@@ -62,9 +62,11 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<ITeamUserService, TeamUserService>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<ITeamUserRepository, TeamUserRepository>();
 builder.Services.AddScoped<IMemberRoleRepository, MemberRoleRepository>();
+builder.Services.AddScoped<ITeamUserPermissionRepository, TeamUserPermissionRepository>();
 #endregion
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();

@@ -13,6 +13,7 @@ namespace Application.Mapper
         {
             CreateMap<Team, GetTeamDto>()
                 .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.TeamUsers.Select(x => x.ApplicationUser)));
+            CreateMap<CreateTeamDto, Team>();
             CreateMap<ApplicationUser, GetUserDto>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
