@@ -8,6 +8,11 @@ namespace Application.IServices
     /// </summary>
     public interface ITeamUserService : IBaseService
     {
+        /// <summary>
+        /// This method adds a user in a team
+        /// </summary>
+        /// <param name="addTeamUserDto"></param>
+        /// <returns>Team</returns>
         Task<BaseResponse<GetTeamDto>> AddUserInTeamAsync(AddTeamUserDto addTeamUserDto);
     }
 }

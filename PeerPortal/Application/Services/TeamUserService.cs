@@ -10,6 +10,9 @@ using Serilog;
 
 namespace Application.Services
 {
+    /// <summary>
+    /// Implementation class of the ITeamUserService interface.
+    /// </summary>
     public class TeamUserService : BaseService, ITeamUserService
     {
         private readonly IUnitOfWork _uow;
@@ -23,6 +26,7 @@ namespace Application.Services
             _teamService = teamService;
         }
 
+        ///<inheritdoc [cref="ITeamUserService.AddUserInTeamAsync"] [path=""]/>
         public async Task<BaseResponse<GetTeamDto>> AddUserInTeamAsync(AddTeamUserDto addTeamUserDto)
         {
             var userExists = await _uow.Users.GetQueryable().AnyAsync(x => x.Id == addTeamUserDto.ApplicationUserId);
@@ -38,33 +42,31 @@ namespace Application.Services
                 return new BaseResponse<GetTeamDto>("No Team Exist with team Id.");
             }
 
-            var teamUser = new TeamUser
-            {
-                Id = Guid.NewGuid().ToString(),
-                ApplicationUserId = addTeamUserDto.ApplicationUserId,
-                TeamId = addTeamUserDto.TeamId,
-            };
+            var teamUser = _mapper.Map<TeamUser>(addTeamUserDto);
+            teamUser.Id=Guid.NewGuid().ToString();
+            var teamUserPermissionList =new List<TeamUserPermission>();
 
-            var teamUserPermissionList=new List<TeamUserPermission>();
             foreach (var permissonId in addTeamUserDto.Permissions)
             {
                 teamUserPermissionList.Add(new TeamUserPermission { TeamUserId = teamUser.Id, PermissionId = permissonId });
             }
+            teamUser.TeamUserPermissions = teamUserPermissionList;
 
-            var getTeamDto = new GetTeamDto();
             try
             {
                 await _uow.TeamUsers.AddAsync(teamUser);
                 await _uow.TeamUserPermissions.AddRangeAsync(teamUserPermissionList);
                 await _uow.SaveChangeAsync();
-                var teamAfterAddingNewUserTask = await _teamService.GetTeamAsync(addTeamUserDto.TeamId);
-                getTeamDto = _mapper.Map<GetTeamDto>(teamAfterAddingNewUserTask.Data);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
                 return new BaseResponse<GetTeamDto>("Something went wrong.");
             }
+
+            var teamAfterAddingNewUserTask = await _teamService.GetTeamAsync(addTeamUserDto.TeamId);
+            var getTeamDto = _mapper.Map<GetTeamDto>(teamAfterAddingNewUserTask.Data);
+
             return new BaseResponse<GetTeamDto>(true,getTeamDto,"User added successfully.");
         }
     }
