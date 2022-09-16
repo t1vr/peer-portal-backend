@@ -38,6 +38,15 @@ namespace Infrastructure.Persistence.Seeds
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };
+            var defaultUser4 = new ApplicationUser
+            {
+                UserName = "rishad",
+                Email = "rishad@gmail.com",
+                FirstName = "Rishad",
+                LastName = "Methun",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
+            };
             if (userManager.Users.All(u => u.Id != defaultUser1.Id))
             {
                 var user = await userManager.FindByEmailAsync(defaultUser1.Email);
@@ -63,6 +72,15 @@ namespace Infrastructure.Persistence.Seeds
                 {
                     await userManager.CreateAsync(defaultUser3, "123Pa$$word!");
                     await userManager.AddToRoleAsync(defaultUser3, Roles.Admin.ToString());
+                }
+            }
+            if (userManager.Users.All(u => u.Id != defaultUser4.Id))
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser4.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser4, "123Pa$$word!");
+                    await userManager.AddToRoleAsync(defaultUser4, Roles.Admin.ToString());
                 }
             }
         }

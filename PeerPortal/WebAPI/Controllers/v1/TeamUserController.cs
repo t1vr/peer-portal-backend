@@ -17,7 +17,7 @@ namespace WebAPI.Controllers.v1
         }
 
         [HttpPost("invite")]
-        public async Task<BaseResponse<AddTeamUserDto>> Add(AddTeamUserDto addTeamUserDto)
+        public async Task<BaseResponse<GetTeamDto>> Add(AddTeamUserDto addTeamUserDto)
         {
             return await _teamUserService.AddUserInTeamAsync(addTeamUserDto);
         }

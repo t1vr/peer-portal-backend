@@ -23,19 +23,19 @@ namespace Application.Services
             _teamService = teamService;
         }
 
-        public async Task<BaseResponse<AddTeamUserDto>> AddUserInTeamAsync(AddTeamUserDto addTeamUserDto)
+        public async Task<BaseResponse<GetTeamDto>> AddUserInTeamAsync(AddTeamUserDto addTeamUserDto)
         {
             var userExists = await _uow.Users.GetQueryable().AnyAsync(x => x.Id == addTeamUserDto.ApplicationUserId);
             if (!userExists)
             {
-                return new BaseResponse<AddTeamUserDto>("User doesn't exist.");
+                return new BaseResponse<GetTeamDto>("User doesn't exist.");
             }
             var team = await _uow.Teams.GetQueryable().Include(x => x.TeamUsers).FirstOrDefaultAsync(x => x.Id == addTeamUserDto.TeamId);
             var isDuplicateTeamUser = team?.TeamUsers.Any(x => x.ApplicationUserId == addTeamUserDto.ApplicationUserId) ?? false;
 
             if (isDuplicateTeamUser)
             {
-                return new BaseResponse<AddTeamUserDto>("No Team Exist with team Id.");
+                return new BaseResponse<GetTeamDto>("No Team Exist with team Id.");
             }
 
             var teamUser = new TeamUser
@@ -57,15 +57,15 @@ namespace Application.Services
                 await _uow.TeamUsers.AddAsync(teamUser);
                 await _uow.TeamUserPermissions.AddRangeAsync(teamUserPermissionList);
                 await _uow.SaveChangeAsync();
- //               var team = await _teamService.GetTeamAsync(teamUser.Id);
- //               getTeamDto = _mapper.Map<GetTeamDto>(team);
+                var teamAfterAddingNewUserTask = await _teamService.GetTeamAsync(addTeamUserDto.TeamId);
+                getTeamDto = _mapper.Map<GetTeamDto>(teamAfterAddingNewUserTask.Data);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return new BaseResponse<AddTeamUserDto>("Something went wrong.");
+                return new BaseResponse<GetTeamDto>("Something went wrong.");
             }
-            return new BaseResponse<AddTeamUserDto>("User added successfully.");
+            return new BaseResponse<GetTeamDto>(true,getTeamDto,"User added successfully.");
         }
     }
 }

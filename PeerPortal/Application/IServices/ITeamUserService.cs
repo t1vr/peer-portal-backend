@@ -8,6 +8,6 @@ namespace Application.IServices
     /// </summary>
     public interface ITeamUserService : IBaseService
     {
-        Task<BaseResponse<AddTeamUserDto>> AddUserInTeamAsync(AddTeamUserDto addTeamUserDto);
+        Task<BaseResponse<GetTeamDto>> AddUserInTeamAsync(AddTeamUserDto addTeamUserDto);
     }
 }
