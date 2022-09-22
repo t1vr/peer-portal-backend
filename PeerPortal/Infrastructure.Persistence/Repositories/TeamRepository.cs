@@ -26,5 +26,11 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await query.FirstOrDefaultAsync(x => x.Id.Equals(id));
         }
+
+        ///<inheritdoc [cref="ITeamRepository.GetAllAsync"] [path=""]/>
+        public async Task<List<Team>> GetAllAsync(IQueryable<Team> query,string id)
+        {
+            return await query.Where(x => x.TeamUsers.Any(x=>x.ApplicationUserId.Equals(id))).ToListAsync();
+        }
     }
 }

@@ -48,10 +48,10 @@ namespace Application.Services
                 Id = Guid.NewGuid().ToString(),
                 ApplicationUserId = GetCurrentUserId(),
             };
-            var team=_mapper.Map<Team>(teamRequest);
+            var team = _mapper.Map<Team>(teamRequest);
             team.Id = Guid.NewGuid().ToString();
             team.TeamUsers = new List<TeamUser>() { teamUser };
-            
+
             try
             {
                 await _unitOfWork.Teams.AddAsync(team);
@@ -90,6 +90,16 @@ namespace Application.Services
             var team = await _unitOfWork.Teams.GetAsync(query, teamId);
             var getTeamDto = _mapper.Map<GetTeamDto>(team);
             return new BaseResponse<GetTeamDto>(true, getTeamDto, "Successfully retrieved team");
+        }
+
+        ///<inheritdoc [cref="ITeamService.GetAllAsync"] [path=""]/>
+        public async Task<BaseResponse<List<GetTeamDto>>> GetAllAsync()
+        {
+            var currentUserId = GetCurrentUserId();
+            var query = _unitOfWork.Teams.GetQueryable().Include(x => x.TeamUsers).ThenInclude(x=>x.ApplicationUser);
+            var teams = await _unitOfWork.Teams.GetAllAsync(query,currentUserId);
+            var getTeamDtoList = _mapper.Map<List<GetTeamDto>>(teams);
+            return new BaseResponse<List<GetTeamDto>>(true, getTeamDtoList, "Successfully Retrieved");
         }
     }
 }

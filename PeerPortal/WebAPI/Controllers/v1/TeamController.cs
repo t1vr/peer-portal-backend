@@ -1,13 +1,7 @@
 ﻿using Application.IServices;
-using Application.Request_Model;
-using Application.ResponseModel;
 using Application.Shared.Dtos;
 using Application.Wrapper;
-using Domain.Common;
-using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace WebAPI.Controllers.v1
 {
@@ -16,11 +10,9 @@ namespace WebAPI.Controllers.v1
     [ApiController]
     public class TeamController : BaseApiController
     {
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ITeamService _teamService;
         public TeamController(IHttpContextAccessor httpContextAccessor, ITeamService teamService)
         {
-            _contextAccessor = httpContextAccessor;
             _teamService = teamService;
         }
 
@@ -44,6 +36,16 @@ namespace WebAPI.Controllers.v1
         public async Task<BaseResponse<GetTeamDto>> GetAsync([FromRoute] string teamId)
         {
             return await _teamService.GetTeamAsync(teamId);
+        }
+
+        /// <summary>
+        /// This Api retrieves list of teams for the currently logged in user
+        /// </summary>
+        /// <returns>Returns list of teams.</returns>
+        [HttpGet("get")]
+        public async Task<BaseResponse<List<GetTeamDto>>> GetAllAsync()
+        {
+            return await _teamService.GetAllAsync();
         }
     }
 }

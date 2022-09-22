@@ -14,5 +14,13 @@ namespace Domain.IRepositories
         /// <param name="id"></param>
         /// <returns>Team</returns>
         Task<Team?> GetAsync(IQueryable<Team> query, string id);
+
+        /// <summary>
+        /// Gets all team given a user Id
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="id"></param>
+        /// <returns>List of Teams</returns>
+        Task<List<Team>> GetAllAsync(IQueryable<Team> query,string id);
     }
 }
